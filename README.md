@@ -1,6 +1,18 @@
 # Job Hunter - Frontend Developer Job Tracker
 
-A personal job hunting tool built with Next.js 15 for finding and tracking frontend developer opportunities. Features AI-powered cover letter generation and a Kanban-style application tracker.
+A comprehensive personal job hunting tool built with Next.js 15, designed specifically for frontend developers to efficiently find, track, and apply for job opportunities. This intelligent platform combines AI-powered cover letter generation with a visual Kanban-style application tracker to streamline your job search process.
+
+## 🎯 **What This App Does**
+
+**Job Hunter** is your personal career companion that automates the tedious aspects of job searching while providing intelligent insights about your applications. It helps you:
+
+- **Discover Opportunities** - Search thousands of frontend developer jobs using advanced filters
+- **Evaluate Matches** - Get AI-powered match scores based on your skills and experience
+- **Generate Cover Letters** - Create personalized cover letters instantly with AI
+- **Track Applications** - Visual Kanban board to monitor your application pipeline
+- **Stay Organized** - All data saved locally with statistics and progress tracking
+
+Perfect for developers who want to optimize their job search workflow and focus on what matters most - landing interviews and getting hired.
 
 ## Features
 
@@ -37,63 +49,105 @@ A personal job hunting tool built with Next.js 15 for finding and tracking front
 - Interviews scheduled
 - Current usage streak
 
-## Tech Stack
+## 🛠 **Technology Stack**
 
-- **Framework**: Next.js 15 with App Router
-- **Styling**: Tailwind CSS with dark theme
-- **UI Components**: Custom components with Lucide icons
-- **Drag & Drop**: @dnd-kit for Kanban board
-- **APIs**: Adzuna (jobs), Groq (AI cover letters)
-- **Storage**: LocalStorage for data persistence
-- **TypeScript**: Full type safety
+### **Frontend Framework**
+- **Next.js 15** - Latest React framework with App Router for optimal performance
+- **TypeScript** - Full type safety and better development experience
+- **React 18** - Modern React with server components and hooks
 
-## Getting Started
+### **Styling & UI**
+- **Tailwind CSS** - Utility-first CSS framework for rapid development
+- **Lucide React** - Beautiful, consistent icons for modern interfaces
+- **Custom Dark Theme** - Professional #0a0a0a background with #2563eb accent colors
 
-### 1. Clone and Install
+### **Interactive Features**
+- **@dnd-kit** - Modern drag-and-drop library for the Kanban board
+- **date-fns** - Robust date manipulation utilities
+- **clsx & tailwind-merge** - Conditional styling and className optimization
+
+### **API Integration**
+- **Adzuna API** - Comprehensive job search database
+- **Groq API** - Fast AI inference with Llama 3 model for cover letters
+- **unavatar.io** - Automatic company logo fetching
+
+### **Data Management**
+- **LocalStorage API** - Client-side persistence for all user data
+- **React Hooks** - State management and side effects
+- **Custom Utils** - Skill extraction, match scoring, and data processing
+
+### **Development Tools**
+- **ESLint** - Code quality and consistency
+- **PostCSS** - CSS processing and optimization
+- **Next.js Dev Tools** - Hot reload and development server
+
+## 🚀 **Quick Start Guide**
+
+### **Prerequisites**
+- Node.js 18+ installed
+- Git for version control
+- API keys from Adzuna and Groq (see setup below)
+
+### **1. Installation**
 
 ```bash
-git clone <repository-url>
+# Clone the repository
+git clone <your-repository-url>
 cd job-hunter
+
+# Install dependencies
 npm install
-```
 
-### 2. Environment Variables
-
-Copy `.env.local.example` to `.env.local` and add your API keys:
-
-```bash
+# Copy environment template
 cp .env.local.example .env.local
 ```
 
-Required environment variables:
-```env
-# Adzuna API Configuration
-ADZUNA_APP_ID=your_app_id_here
-ADZUNA_APP_KEY=your_app_key_here
+### **2. API Setup**
 
-# Groq API Configuration  
-GROQ_API_KEY=your_groq_api_key_here
-```
+#### **Get Adzuna API Keys (Free)**
+1. Visit [https://developer.adzuna.com](https://developer.adzuna.com)
+2. Create a free developer account
+3. Navigate to your dashboard
+4. Copy your `APP_ID` and `APP_KEY`
+5. Add to `.env.local`:
+   ```env
+   ADZUNA_APP_ID=your_app_id_here
+   ADZUNA_APP_KEY=your_app_key_here
+   ```
 
-### 3. Get API Keys
+#### **Get Groq API Key**
+1. Visit [https://groq.com](https://groq.com)
+2. Sign up for free account
+3. Get API key from dashboard
+4. Add to `.env.local`:
+   ```env
+   GROQ_API_KEY=your_groq_api_key_here
+   ```
 
-#### Adzuna API (Free)
-1. Sign up at [https://developer.adzuna.com](https://developer.adzuna.com)
-2. Get your APP_ID and APP_KEY from the dashboard
-3. Add them to your `.env.local` file
-
-#### Groq API (Free tier available)
-1. Sign up at [https://groq.com](https://groq.com)
-2. Get your API key from the dashboard
-3. Add it to your `.env.local` file
-
-### 4. Run Development Server
+### **3. Run the Application**
 
 ```bash
+# Start development server
 npm run dev
+
+# Or build for production
+npm run build
+npm start
 ```
 
-Open [http://localhost:3000](http://localhost:3000) to view the application.
+**Visit** [http://localhost:3000](http://localhost:3000) to start using Job Hunter!
+
+### **4. Environment Variables Summary**
+
+Your `.env.local` file should contain:
+```env
+# Job Search API
+ADZUNA_APP_ID=your_adzuna_app_id
+ADZUNA_APP_KEY=your_adzuna_app_key
+
+# AI Cover Letter Generation
+GROQ_API_KEY=your_groq_api_key
+```
 
 ## Pages
 
@@ -101,31 +155,61 @@ Open [http://localhost:3000](http://localhost:3000) to view the application.
 - **/tracker** - Kanban application tracker
 - **/cover-letter** - Cover letter history and management
 
-## Project Structure
+## 📁 **Project Architecture**
 
 ```
-src/
-├── app/
-│   ├── api/          # API routes for jobs and cover letters
-│   ├── cover-letter/ # Cover letter history page
-│   ├── tracker/      # Application tracker page
-│   ├── layout.tsx    # Root layout
-│   ├── page.tsx      # Dashboard page
-│   └── globals.css   # Global styles
-├── components/
-│   ├── Dashboard.tsx
-│   ├── JobSearch.tsx
-│   ├── JobCards.tsx
-│   ├── JobCard.tsx
-│   ├── CoverLetterModal.tsx
-│   ├── StatsBar.tsx
-│   ├── KanbanColumn.tsx
-│   └── TrackedJobCard.tsx
-└── lib/
-    ├── types.ts      # TypeScript definitions
-    ├── utils.ts      # Utility functions
-    └── localStorage.ts # Local storage management
+job-hunter/
+├── 📄 README.md                    # This documentation file
+├── 📄 package.json                 # Dependencies and scripts
+├── 📄 .env.local.example           # Environment variables template
+├── 📄 .gitignore                   # Git ignore rules
+├── 📄 tailwind.config.ts           # Tailwind CSS configuration
+├── 📄 next.config.mjs              # Next.js configuration
+└── 📁 src/
+    ├── 📁 app/                     # Next.js App Router pages
+    │   ├── 📁 api/                 # API routes
+    │   │   ├── 📄 jobs/route.ts    # Job search endpoint
+    │   │   └── 📄 cover-letter/route.ts # Cover letter generation
+    │   ├── 📁 cover-letter/        # Cover letter history page
+    │   ├── 📁 tracker/             # Application tracker page
+    │   ├── 📄 layout.tsx           # Root layout component
+    │   ├── 📄 page.tsx             # Main dashboard page
+    │   └── 📄 globals.css          # Global styles
+    ├── 📁 components/              # Reusable React components
+    │   ├── 📄 Dashboard.tsx        # Main dashboard container
+    │   ├── 📄 JobSearch.tsx        # Job search form and filters
+    │   ├── 📄 JobCards.tsx         # Job results container
+    │   ├── 📄 JobCard.tsx          # Individual job card component
+    │   ├── 📄 CoverLetterModal.tsx # AI cover letter modal
+    │   ├── 📄 StatsBar.tsx         # Dashboard statistics
+    │   ├── 📄 KanbanColumn.tsx     # Kanban board column
+    │   └── 📄 TrackedJobCard.tsx   # Tracked job card for Kanban
+    └── 📁 lib/                     # Utility libraries and types
+        ├── 📄 types.ts             # TypeScript type definitions
+        ├── 📄 utils.ts             # Helper functions and utilities
+        └── 📄 localStorage.ts      # Local storage management
 ```
+
+## 🎨 **Design System**
+
+### **Color Palette**
+- **Background**: `#0a0a0a` (Deep black)
+- **Primary**: `#2563eb` (Blue accent)
+- **Cards**: `#1a1a1a` (Dark gray)
+- **Borders**: `#222222` (Subtle borders)
+- **Text**: `#ffffff` (White primary)
+- **Muted**: `#9ca3af` (Gray secondary)
+
+### **Typography**
+- **Font**: Inter (Google Fonts)
+- **Weights**: 400 (regular), 500 (medium), 600 (semibold), 700 (bold)
+- **Sizes**: Responsive scaling from mobile to desktop
+
+### **Component Patterns**
+- **Cards**: Rounded corners with subtle borders
+- **Buttons**: Consistent hover states and transitions
+- **Modals**: Backdrop blur and smooth animations
+- **Forms**: Dark inputs with focus states
 
 ## Key Features Explained
 
