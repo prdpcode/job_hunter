@@ -32,7 +32,7 @@ export default function CoverLetterModal({ job, onClose }: CoverLetterModalProps
         body: JSON.stringify({
           jobTitle: job.title,
           company: job.company.display_name,
-          jobDescription: job.description
+          description: job.description
         }),
       });
 
