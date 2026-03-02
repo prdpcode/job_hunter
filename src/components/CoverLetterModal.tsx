@@ -1,7 +1,7 @@
 'use client';
 
-import { useState } from 'react';
-import { X, Copy, RefreshCw, FileText } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { X, Copy, RefreshCw, FileText, AlertCircle } from 'lucide-react';
 import { Job } from '@/lib/types';
 import { LocalStorage } from '@/lib/localStorage';
 
@@ -14,11 +14,16 @@ export default function CoverLetterModal({ job, onClose }: CoverLetterModalProps
   const [coverLetter, setCoverLetter] = useState('');
   const [loading, setLoading] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [error, setError] = useState('');
 
   const generateCoverLetter = async () => {
     setLoading(true);
+    setError('');
+    setCoverLetter('');
     
     try {
+      console.log('Generating cover letter for:', job.title, job.company.display_name);
+      
       const response = await fetch('/api/cover-letter', {
         method: 'POST',
         headers: {
@@ -31,7 +36,15 @@ export default function CoverLetterModal({ job, onClose }: CoverLetterModalProps
         }),
       });
 
+      console.log('Cover letter API response status:', response.status);
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || `HTTP ${response.status}`);
+      }
+
       const data = await response.json();
+      console.log('Cover letter API response data:', data);
       
       if (data.coverLetter) {
         setCoverLetter(data.coverLetter);
@@ -46,10 +59,13 @@ export default function CoverLetterModal({ job, onClose }: CoverLetterModalProps
         };
         
         LocalStorage.saveCoverLetter(letter);
+        console.log('Cover letter saved to localStorage');
+      } else {
+        throw new Error('No cover letter generated');
       }
     } catch (error) {
       console.error('Error generating cover letter:', error);
-      setCoverLetter('Failed to generate cover letter. Please try again.');
+      setError(error instanceof Error ? error.message : 'Failed to generate cover letter. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -67,13 +83,14 @@ export default function CoverLetterModal({ job, onClose }: CoverLetterModalProps
 
   const handleRegenerate = () => {
     setCoverLetter('');
+    setError('');
     generateCoverLetter();
   };
 
   // Auto-generate on mount
-  useState(() => {
+  useEffect(() => {
     generateCoverLetter();
-  });
+  }, []);
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
@@ -102,6 +119,29 @@ export default function CoverLetterModal({ job, onClose }: CoverLetterModalProps
               <div className="text-center">
                 <div className="w-8 h-8 border-2 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
                 <p className="text-gray-400">Generating your cover letter...</p>
+              </div>
+            </div>
+          ) : error ? (
+            <div className="space-y-4">
+              <div className="bg-red-900/20 border border-red-800 rounded-lg p-4">
+                <div className="flex items-center space-x-3">
+                  <AlertCircle className="w-5 h-5 text-red-400" />
+                  <div>
+                    <h4 className="text-red-400 font-medium">Generation Failed</h4>
+                    <p className="text-red-300 text-sm mt-1">{error}</p>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="flex items-center space-x-3">
+                <button
+                  onClick={handleRegenerate}
+                  disabled={loading}
+                  className="flex items-center space-x-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-colors disabled:opacity-50"
+                >
+                  <RefreshCw className="w-4 h-4" />
+                  <span>Try Again</span>
+                </button>
               </div>
             </div>
           ) : coverLetter ? (
@@ -134,7 +174,7 @@ export default function CoverLetterModal({ job, onClose }: CoverLetterModalProps
           ) : (
             <div className="text-center py-12">
               <FileText className="w-16 h-16 mx-auto mb-4 text-gray-600" />
-              <p className="text-gray-400">Click generate to create your cover letter</p>
+              <p className="text-gray-400">Preparing your cover letter...</p>
             </div>
           )}
         </div>

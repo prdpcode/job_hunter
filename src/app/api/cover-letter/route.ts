@@ -1,12 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(request: NextRequest) {
+  console.log('Cover letter API called');
+  
   try {
     const { jobTitle, company, jobDescription } = await request.json();
     
     const apiKey = process.env.GROQ_API_KEY;
+    console.log('Key exists:', !!apiKey);
     
     if (!apiKey) {
+      console.error('Groq API key not configured');
       return NextResponse.json(
         { error: 'Groq API key not configured' },
         { status: 500 }
@@ -19,6 +23,8 @@ export async function POST(request: NextRequest) {
 Title: ${jobTitle}
 Company: ${company}
 Description: ${jobDescription}`;
+    
+    console.log('Making Groq API call...');
     
     const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
       method: 'POST',
@@ -37,13 +43,28 @@ Description: ${jobDescription}`;
       }),
     });
     
+    console.log('Groq API response status:', response.status);
+    
     if (!response.ok) {
-      throw new Error(`Groq API error: ${response.status}`);
+      const errorText = await response.text();
+      console.error('Groq API error:', response.status, errorText);
+      throw new Error(`Groq API error: ${response.status} - ${errorText}`);
     }
     
     const data = await response.json();
-    const coverLetter = data.choices[0]?.message?.content || '';
+    console.log('Groq API response data:', data);
     
+    const coverLetter = data.choices?.[0]?.message?.content || '';
+    
+    if (!coverLetter) {
+      console.error('No cover letter generated');
+      return NextResponse.json(
+        { error: 'No cover letter generated' },
+        { status: 500 }
+      );
+    }
+    
+    console.log('Cover letter generated successfully');
     return NextResponse.json({ coverLetter });
   } catch (error) {
     console.error('Error generating cover letter:', error);
